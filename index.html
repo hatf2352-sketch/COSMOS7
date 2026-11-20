@@ -1,0 +1,157 @@
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>COSMOS 7 | جهان هستی</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#050816;color:#fff;font-family:Tahoma,Arial,sans-serif}
+header{text-align:center;padding:35px 15px;background:radial-gradient(circle at top,#17366b,#050816 70%)}
+h1{font-size:38px;color:#79c8ff;margin:10px}
+header p{color:#c4d8ed}
+nav{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;padding:15px}
+button,select,input{background:#142542;color:white;border:1px solid #31547e;border-radius:10px;padding:12px}
+button{cursor:pointer}
+button:hover{background:#2361a1}
+input{width:min(90%,450px)}
+.search{text-align:center;padding:15px}
+h2{text-align:center;color:#7dcaff}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:18px;padding:20px;max-width:1100px;margin:auto}
+.card{background:#101d35;border:1px solid #263f64;border-radius:16px;padding:14px;text-align:center}
+.card img{width:100%;height:165px;object-fit:cover;border-radius:12px;background:#080d19}
+.card h3{color:#8bd2ff}
+.card p{color:#c8d5e8;line-height:1.8;font-size:14px}
+.detail{max-width:850px;margin:20px auto;padding:20px;background:#101d35;border-radius:15px;line-height:2}
+.detail img{width:100%;max-height:400px;object-fit:contain;border-radius:12px}
+footer{text-align:center;padding:30px;color:#8da6c5}
+</style>
+</head>
+<body>
+
+<header>
+<h1>🌌 COSMOS 7</h1>
+<p>سفری شگفت‌انگیز به جهان هستی</p>
+<p>Explore the Universe</p>
+</header>
+
+<nav>
+<select id="language" onchange="changeLanguage()">
+<option value="fa">فارسی</option>
+<option value="en">English</option>
+<option value="ar">العربية</option>
+<option value="fr">Français</option>
+<option value="zh">中文</option>
+<option value="de">Deutsch</option>
+<option value="ru">Русский</option>
+<option value="tr">Türkçe</option>
+<option value="es">Español</option>
+<option value="ja">日本語</option>
+</select>
+</nav>
+
+<div class="search">
+<input id="search" placeholder="نام سیاره یا جرم آسمانی را جست‌وجو کن..." oninput="showPlanets()">
+</div>
+
+<h2 id="heading">منظومه شمسی</h2>
+<div class="grid" id="planets"></div>
+
+<h2>🔭 آرشیو تصاویر فضایی ناسا</h2>
+<div class="search">
+<input id="nasaSearch" placeholder="مثلاً Black Hole یا Mars">
+<button onclick="searchNASA()">جست‌وجو</button>
+</div>
+<div class="grid" id="nasaResults"></div>
+
+<h2>🌠 شگفتی‌های کیهان</h2>
+<div class="grid">
+<div class="card"><h3>سیاه‌چاله‌ها</h3><p>ناحیه‌هایی از فضا با گرانش بسیار قوی که حتی نور نمی‌تواند از آن‌ها بگریزد.</p></div>
+<div class="card"><h3>سحابی‌ها</h3><p>ابرهای عظیم گاز و غبار که محل تولد یا بقایای ستارگان هستند.</p></div>
+<div class="card"><h3>کهکشان‌ها</h3><p>مجموعه‌های عظیم ستارگان، گاز، غبار و ماده تاریک.</p></div>
+<div class="card"><h3>ستاره‌های نوترونی</h3><p>بقایای بسیار چگال برخی ستارگان پس از انفجار ابرنواختری.</p></div>
+</div>
+
+<footer>
+COSMOS 7 — Discover Beyond the Stars ✨
+</footer>
+
+<script>
+const data=[
+["عطارد","Mercury","سیاره‌ای کوچک و نزدیک به خورشید.","Mercury"],
+["زهره","Venus","سیاره‌ای بسیار داغ با جو غلیظ.","Venus"],
+["زمین","Earth","خانه ما و تنها جهان شناخته‌شده دارای حیات.","Earth"],
+["مریخ","Mars","سیاره سرخ با آتشفشان‌ها و دره‌های عظیم.","Mars"],
+["مشتری","Jupiter","بزرگ‌ترین سیاره منظومه شمسی.","Jupiter"],
+["زحل","Saturn","سیاره مشهور به حلقه‌های زیبایش.","Saturn"],
+["اورانوس","Uranus","غولی یخی با محور چرخش بسیار مایل.","Uranus"],
+["نپتون","Neptune","سیاره‌ای دوردست با بادهای بسیار سریع.","Neptune"],
+["پلوتو","Pluto","سیاره کوتوله در کمربند کویپر.","Pluto"],
+["سرس","Ceres","بزرگ‌ترین جرم کمربند سیارکی.","Ceres"],
+["اریس","Eris","یکی از اجرام بزرگ و دوردست منظومه شمسی.","Eris"]
+];
+
+let currentLang="fa";
+
+function showPlanets(){
+const q=document.getElementById("search").value.toLowerCase();
+const box=document.getElementById("planets");
+box.innerHTML="";
+data.filter(p=>p.join(" ").toLowerCase().includes(q)).forEach(p=>{
+box.innerHTML+=`
+<div class="card">
+<img src="https://images-assets.nasa.gov/image/PIA${p[3]==='Jupiter'?'22946':p[3]==='Saturn'?'17172':'00001'}/image.jpg"
+onerror="this.src='https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?w=700'">
+<h3>${p[0]} | ${p[1]}</h3>
+<p>${p[2]}</p>
+<button onclick="details('${p[3]}','${p[0]}','${p[2]}')">مشاهده جزئیات</button>
+</div>`;
+});
+}
+
+function details(name,title,description){
+const box=document.getElementById("nasaResults");
+document.getElementById("nasaSearch").value=name;
+box.innerHTML=`<div class="detail">
+<h2>${title}</h2><p>${description}</p>
+<button onclick="searchNASA()">مشاهده تصاویر بیشتر</button>
+</div>`;
+searchNASA();
+}
+
+async function searchNASA(){
+const q=document.getElementById("nasaSearch").value.trim();
+if(!q)return;
+const box=document.getElementById("nasaResults");
+box.innerHTML="<p>در حال دریافت تصاویر از ناسا...</p>";
+try{
+const url="https://images-api.nasa.gov/search?q="+encodeURIComponent(q)+"&media_type=image";
+const response=await fetch(url);
+const result=await response.json();
+box.innerHTML="";
+result.collection.items.slice(0,12).forEach(item=>{
+const info=item.data[0];
+const image=item.links?.find(x=>x.render==="image")?.href;
+if(!image)return;
+box.innerHTML+=`<div class="card">
+<img src="${image}" loading="lazy">
+<h3>${info.title||"تصویر فضایی"}</h3>
+<p>${(info.description||"تصویر از آرشیو ناسا").slice(0,180)}</p>
+<a href="${image}" target="_blank" style="color:#8bd2ff">نمایش تصویر اصلی</a>
+</div>`;
+});
+if(!box.innerHTML)box.innerHTML="<p>تصویری پیدا نشد.</p>";
+}catch(e){box.innerHTML="<p>اتصال به آرشیو ناسا ممکن نیست. اینترنت را بررسی کن.</p>";}
+}
+
+function changeLanguage(){
+currentLang=document.getElementById("language").value;
+const names={fa:"منظومه شمسی",en:"Solar System",ar:"النظام الشمسي",fr:"Système solaire",zh:"太阳系",de:"Sonnensystem",ru:"Солнечная система",tr:"Güneş Sistemi",es:"Sistema Solar",ja:"太陽系"};
+document.getElementById("heading").textContent=names[currentLang];
+}
+
+showPlanets();
+</script>
+</body>
+</html>
